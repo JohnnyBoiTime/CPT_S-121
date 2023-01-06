@@ -1,65 +1,35 @@
-/*****************************************************\
-| Name : Philip Rickey                                |  
-| Date: 9/17/2022                                     |
-| Class : CPT_S 121 PA 3                              |  
-| Description: This program processes numbers that    |
-|			 corrosponds with student records read    |
-|			 in an input file, and writes results	  |
-|			 to an output file						  |
-\*****************************************************/
-
-#include "GPA.h"
-
+#include "functions.h"
 
 int main(void) {
 
-	// Number of students
-	int numOfStudents = 0;
+	// Opens files
+	FILE* infile = fopen("payroll.txt", "r");
+	FILE* outfile = fopen("paid.txt", "w");
 
-	// Array to store deviations
-	double numOfDeviations[5] = { 0.0, 0.0, 0.0, 0.0, 0.0 };
+	// Variables
+	int numOfEmployees = 0;
+	double total = 0.0, average = 0.0, min = 0.0, max = 0.0, calculator = 0.0;
 	
-	// Double variables for gpa, age, total, average, and deviations
-	double gpaTotal = 0.0, standingTotal = 0.0, ageTotal = 0.0, meanGpa = 0.0, meanStanding = 0.0, meanAge = 0.0,
-		   minGpa = 0.0, maxGpa = 0.0, variance = 0.0, standardDeviation = 0.0;
+	// Employee array
+	Employee payroll[5] = {0};
+	
+	// Reads file, sets number of employees to amount read
+	numOfEmployees = readFile(infile, payroll);
 
-	// Files
-	FILE* infile = fopen("input.dat", "r");
-	FILE* outfile = fopen("output.dat", "w");
+	// Sorts employees, pays employees, gets totals
+	sortEmployees(outfile, payroll, numOfEmployees);
+	employeePaid(payroll, numOfEmployees);
+	getTotals(payroll, numOfEmployees, &total, &average, &min, &max);
 
-	// Array to store students
-	Student student[5];
+	// Prints total, average, max, and min to output file
+	fprintf(outfile, "Total: $%.2lf\n", total);
+	fprintf(outfile, "Average: $%.2lf\n", average);
+	fprintf(outfile, "Max: $%.2lf\n", max);
+	fprintf(outfile, "Min: $%.2lf\n", min);
 
-	// Sets number of students to readFile function
-	numOfStudents = readFile(infile, student);
-
-	// Calculates sum
-	calculateSum(student, numOfStudents, &gpaTotal, &maxGpa, &minGpa, &standingTotal, &ageTotal);
-
-	// Calculates mean
-	calculateMean(student, numOfStudents, &meanGpa, &meanStanding, &meanAge);
-
-	// Calculates deviation
-	calculateDeviation(student, numOfDeviations, numOfStudents, &meanGpa);
-
-	// Calculate variance
-	calculateVariance(numOfDeviations, numOfStudents, &variance);
-
-	// Calculates standard deciation
-	calculateStandardDeviation(&variance, &standardDeviation);
-
-	// Prints out information to the file
-	fprintf(outfile, "Mean of GPA: %.2lf\n", meanGpa);
-	fprintf(outfile, "Class Standing Mean: %.2lf\n", meanStanding);
-	fprintf(outfile, "Mean of Ages: %.2lf\n\n", meanAge);
-
-	fprintf(outfile, "Standard Deviation: %.2lf\n", standardDeviation);
-	fprintf(outfile, "Min GPA: %.2lf\n", minGpa);
-	fprintf(outfile, "Max GPA: %.2lf\n", maxGpa);
-
-	// Closes file
-	fclose(infile);
+	// Closes files
 	fclose(outfile);
-	
+	fclose(infile);
+
 	return 0;
 }
