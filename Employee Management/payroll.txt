@@ -1,0 +1,16 @@
+Pullman, WA
+B
+80.0
+17.76
+Seattle, WA
+S
+87.25
+23.45
+Boise, ID
+S
+80.0
+47.86
+Denver, CO
+B
+83.75
+12.15
